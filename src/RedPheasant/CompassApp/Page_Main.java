@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 public class Page_Main extends Activity implements SensorEventListener
 {
- 
+ TextView readingAzimuth;
  SensorManager sensorManager;
  private Sensor sensorAccelerometer;
  private Sensor sensorMagneticField;
@@ -21,6 +21,7 @@ public class Page_Main extends Activity implements SensorEventListener
  private float[] matrixI;
  private float[] matrixValues;
  
+ 
  //TextView readingAzimuth, readingPitch, readingRoll;
  Adapter_Compass_View myCompass;
  
@@ -30,7 +31,7 @@ public class Page_Main extends Activity implements SensorEventListener
   {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.main);
-      //readingAzimuth = (TextView)findViewById(R.id.azimuth);
+      readingAzimuth = (TextView)findViewById(R.id.azimuth);
       //readingPitch = (TextView)findViewById(R.id.pitch);
       //readingRoll = (TextView)findViewById(R.id.roll);
     
@@ -78,17 +79,21 @@ public class Page_Main extends Activity implements SensorEventListener
  }
 
  @Override
- public void onSensorChanged(SensorEvent event) {
+ public void onSensorChanged(SensorEvent event)
+ {
   // TODO Auto-generated method stub
-  
-  switch(event.sensor.getType()){
+  switch(event.sensor.getType())
+  {
   case Sensor.TYPE_ACCELEROMETER:
-   for(int i =0; i < 3; i++){
+   for(int i =0; i < 3; i++)
+   {
     valuesAccelerometer[i] = event.values[i];
    }
    break;
+  
   case Sensor.TYPE_MAGNETIC_FIELD:
-   for(int i =0; i < 3; i++){
+   for(int i =0; i < 3; i++)
+   {
     valuesMagneticField[i] = event.values[i];
    }
    break;
@@ -100,19 +105,36 @@ public class Page_Main extends Activity implements SensorEventListener
        valuesAccelerometer,
        valuesMagneticField);
   
-  if(success){
+  if(success)
+  {
    SensorManager.getOrientation(matrixR, matrixValues);
    
-   //double azimuth = Math.toDegrees(matrixValues[0]);
+   double azimuth = Math.toDegrees(matrixValues[0]);
    //double pitch = Math.toDegrees(matrixValues[1]);
    //double roll = Math.toDegrees(matrixValues[2]);
    
-   //readingAzimuth.setText("Azimuth: " + String.valueOf(azimuth));
+   if(azimuth > 0 && azimuth < 90)
+   {
+   readingAzimuth.setText(String.valueOf(azimuth)+"° N");
+   }
+   else if(azimuth > 90 && azimuth < 180)
+   {
+   readingAzimuth.setText(String.valueOf(azimuth)+"° W");
+   }
+      else if(azimuth > 180 && azimuth < 270)
+   {
+   readingAzimuth.setText(String.valueOf(azimuth)+"° S");
+   }
+      else if(azimuth > 270 && azimuth < 360)
+   {
+   readingAzimuth.setText(String.valueOf(azimuth)+"° E");
+   }
+   
+   
    //readingPitch.setText("Pitch: " + String.valueOf(pitch));
    //readingRoll.setText("Roll: " + String.valueOf(roll));
    
    myCompass.update(matrixValues[0]);
   }
-  
  }
 }
