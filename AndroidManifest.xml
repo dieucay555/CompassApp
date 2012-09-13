@@ -17,6 +17,26 @@
         android:screenOrientation="portrait"
         android:label="@string/app_name">
         </activity>
+                <activity 
+        android:name="Page_Settings"
+        android:screenOrientation="portrait"
+        android:label="@string/app_name">
+        </activity>
+                <activity 
+        android:name="Page_Favorites"
+        android:screenOrientation="portrait"
+        android:label="@string/app_name">
+        </activity>
+                <activity 
+        android:name="Page_Help"
+        android:screenOrientation="portrait"
+        android:label="@string/app_name">
+        </activity>
+            <activity 
+        android:name="Page_Sensors"
+        android:screenOrientation="portrait"
+        android:label="@string/app_name">
+        </activity>
     </application>
         <uses-feature android:name="android.hardware.sensor.accelerometer" android:required="true" />
         <uses-feature android:name="android.hardware.sensor.compass" android:required="true" />

@@ -1,11 +1,19 @@
 package RedPheasant.CompassApp;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.HorizontalScrollView;
+import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class Page_Main extends Activity implements SensorEventListener
 {
@@ -30,7 +38,12 @@ public class Page_Main extends Activity implements SensorEventListener
   public void onCreate(Bundle savedInstanceState)
   {
       super.onCreate(savedInstanceState);
+      overridePendingTransition(R.layout.animation_fadein, R.layout.animation_fadeout);
       setContentView(R.layout.main);
+      
+      //Maak seker die screen bly aan.
+      getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+      
       readingAzimuth = (TextView)findViewById(R.id.azimuth);
       //readingPitch = (TextView)findViewById(R.id.pitch);
       //readingRoll = (TextView)findViewById(R.id.roll);
@@ -39,7 +52,7 @@ public class Page_Main extends Activity implements SensorEventListener
     
       sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
       sensorAccelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-   sensorMagneticField = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+      sensorMagneticField = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
     
    valuesAccelerometer = new float[3];
    valuesMagneticField = new float[3];
@@ -47,6 +60,91 @@ public class Page_Main extends Activity implements SensorEventListener
    matrixR = new float[9];
    matrixI = new float[9];
    matrixValues = new float[3];
+   
+    //First , disable the scrollbar (Because it looks ugly.)
+        HorizontalScrollView hsView = (HorizontalScrollView) findViewById(R.id.horizontalscrollbar_mainscreen);
+        hsView.setHorizontalScrollBarEnabled(false);
+
+
+        //Home Button
+        ImageButton imageButton1 = (ImageButton) findViewById(R.id.imageButton1);
+        imageButton1.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                //Intent myIntent = new Intent(v.getContext(), Page_Main.class);
+                //startActivityForResult(myIntent, 0);
+                //Toast.makeText(Page_Main.this, "clicked", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+
+
+        //Settings Button
+        ImageButton imageButton2 = (ImageButton) findViewById(R.id.imageButton2);
+        imageButton2.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent myIntent = new Intent(v.getContext(), Page_Settings.class);
+                startActivityForResult(myIntent, 0);
+                overridePendingTransition(R.layout.animation_fadein, R.layout.animation_fadeout);
+            }
+        });
+
+ 
+
+
+        //Friends Button
+        ImageButton imageButton3 = (ImageButton) findViewById(R.id.imageButton3);
+        imageButton3.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                 Toast.makeText(Page_Main.this, "Under Construction...", Toast.LENGTH_LONG).show();
+                 //Intent myIntent = new Intent(v.getContext(), Page_Sensors.class);
+                 //startActivityForResult(myIntent, 0);
+                 //overridePendingTransition(R.layout.animation_fadein, R.layout.animation_fadeout);
+            }
+        });
+
+
+
+
+        //Favorites Button
+        ImageButton imageButton4 = (ImageButton) findViewById(R.id.imageButton4);
+        imageButton4.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent myIntent = new Intent(v.getContext(), Page_Favorites.class);
+                startActivityForResult(myIntent, 0);
+                overridePendingTransition(R.layout.animation_fadein, R.layout.animation_fadeout);
+            }
+        });
+
+
+
+
+        //Help Button
+        ImageButton imageButton5 = (ImageButton) findViewById(R.id.imageButton5);
+        imageButton5.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent myIntent = new Intent(v.getContext(), Page_Help.class);
+                startActivityForResult(myIntent, 0);
+                overridePendingTransition(R.layout.animation_fadein, R.layout.animation_fadeout);
+            }
+        });
+    
+    
   }
 
  @Override
@@ -55,15 +153,16 @@ public class Page_Main extends Activity implements SensorEventListener
 
   sensorManager.registerListener(this,
     sensorAccelerometer,
-    SensorManager.SENSOR_DELAY_NORMAL);
+    SensorManager.SENSOR_DELAY_FASTEST);
   sensorManager.registerListener(this,
     sensorMagneticField,
-    SensorManager.SENSOR_DELAY_NORMAL);
+    SensorManager.SENSOR_DELAY_FASTEST);
   super.onResume();
  }
 
  @Override
- protected void onPause() {
+ protected void onPause()
+ {
 
   sensorManager.unregisterListener(this,
     sensorAccelerometer);
@@ -113,21 +212,64 @@ public class Page_Main extends Activity implements SensorEventListener
    //double pitch = Math.toDegrees(matrixValues[1]);
    //double roll = Math.toDegrees(matrixValues[2]);
    
+   String azimuthS = String.valueOf(azimuth);
+   String temp = azimuthS.substring(0, azimuthS.indexOf("."));
+   String Degrees = temp;
+   
    if(azimuth > 0 && azimuth < 90)
    {
-   readingAzimuth.setText(String.valueOf(azimuth)+"° N");
+       if(azimuth < 1)
+         readingAzimuth.setText(Degrees+"° N");
+       else
+       readingAzimuth.setText(Degrees+"° NW");
    }
-   else if(azimuth > 90 && azimuth < 180)
+   
+   if(azimuth > 90 && azimuth < 180)
    {
-   readingAzimuth.setText(String.valueOf(azimuth)+"° W");
+       if(azimuth < 91)
+    readingAzimuth.setText(Degrees+"° W");
+       else
+       readingAzimuth.setText(Degrees+"° SW");
    }
-      else if(azimuth > 180 && azimuth < 270)
+   
+   if(azimuth < -90 && azimuth > -180)
    {
-   readingAzimuth.setText(String.valueOf(azimuth)+"° S");
+    int azimuth2 = Integer.parseInt(Degrees);
+    azimuth2 = 360 - Math.abs(azimuth2);
+    Degrees = String.valueOf(azimuth2);
+    
+    if(azimuth2 < 181)
+    readingAzimuth.setText(Degrees+"° S");
+    else
+    readingAzimuth.setText(Degrees+"° SE");
+    
+    if(azimuth2 == 180)
+    {
+    readingAzimuth.setText(Degrees+"° S");
+    }
    }
-      else if(azimuth > 270 && azimuth < 360)
+   
+   if(azimuth < 0 && azimuth > -90)
    {
-   readingAzimuth.setText(String.valueOf(azimuth)+"° E");
+    int azimuth2 = Integer.parseInt(Degrees);
+    azimuth2 = 360 - Math.abs(azimuth2);
+    Degrees = String.valueOf(azimuth2);
+    
+    if(azimuth2 < 271)
+    readingAzimuth.setText(Degrees+"° E");
+    else
+    readingAzimuth.setText(Degrees+"° NE");
+    
+    if(azimuth2 == 270)
+    {
+        readingAzimuth.setText(Degrees+"° E");
+    }
+    
+    if(azimuth2 == 360)
+    {
+        readingAzimuth.setText(Degrees+"° N");
+    }
+    
    }
    
    
@@ -137,4 +279,25 @@ public class Page_Main extends Activity implements SensorEventListener
    myCompass.update(matrixValues[0]);
   }
  }
+
+   
+  @Override
+    public void onBackPressed()
+    {
+        new AlertDialog.Builder(this)
+        .setTitle("Really Exit?")
+        .setMessage("Are you sure you want to exit?")
+        .setNegativeButton(android.R.string.no, null)
+        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener()
+        {
+
+            public void onClick(DialogInterface arg0, int arg1)
+            {
+                Page_Main.super.onBackPressed();
+                finish();
+            }
+        }).create().show();
+    }
+    
+
 }
