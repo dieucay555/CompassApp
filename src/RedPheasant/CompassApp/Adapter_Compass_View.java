@@ -116,7 +116,7 @@ public class Adapter_Compass_View extends View
 
  @Override
  protected void onDraw(Canvas canvas) {
-  
+ 
   int w = getMeasuredWidth();
   int h = getMeasuredHeight();
   int r;
@@ -135,17 +135,33 @@ public class Adapter_Compass_View extends View
   
   Options options = new BitmapFactory.Options();
     options.inScaled = false;
+    
+    
   Bitmap newcompass11 = BitmapFactory.decodeResource(getResources(), R.drawable.newcompass,options);
   //ImageView newc = (ImageView)
   Bitmap newcompass = Bitmap.createScaledBitmap(newcompass11, getMeasuredWidth(),  getMeasuredWidth()+2, true);
 
-    Rect srcRect = new Rect(0, 0, canvas.getWidth(), canvas.getHeight());
-    Rect dstRect = new Rect(srcRect);
-    Bitmap.Config conf = Bitmap.Config.ARGB_8888; 
+    //Rect srcRect = new Rect(0, 0, canvas.getWidth(), canvas.getHeight());
+    //Rect dstRect = new Rect(srcRect);
+    //Bitmap.Config conf = Bitmap.Config.ARGB_8888; 
     paint.setFilterBitmap(true);
-    canvas.drawBitmap(newcompass, srcRect, dstRect, paint);
-  
-  
+ 
+    //canvas.save(Canvas.MATRIX_SAVE_FLAG);
+     canvas.translate(canvas.getWidth()/2, canvas.getHeight()/2);   
+            if (position != 0.0)
+            {
+                double d = (180/Math.PI);
+                float radiale = -position * (float)d;
+                canvas.rotate(radiale);
+            } 
+            int cx =  - newcompass.getWidth() / 2 ;
+            int cy =  - newcompass.getHeight() / 2;
+
+            canvas.drawBitmap(newcompass, cx, cy, paint);
+    
+    //canvas.restore();
+    //canvas.drawBitmap(newcompass,0,(h/2-(newcompass.getScaledHeight(canvas)+2)/2),paint);
+  //canvas.rotate(-position);
   
   paint.setColor(Color.RED);
   canvas.drawLine(
