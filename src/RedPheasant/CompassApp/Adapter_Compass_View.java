@@ -6,6 +6,7 @@ package RedPheasant.CompassApp;
 
 import android.content.Context;
 import android.graphics.*;
+import android.graphics.BitmapFactory.Options;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -130,7 +131,21 @@ public class Adapter_Compass_View extends View
   paint.setStrokeWidth(5);
   paint.setColor(Color.WHITE);
   
-  canvas.drawCircle(w/2, h/2, r, paint);
+  //canvas.drawCircle(w/2, h/2, r, paint);
+  
+  Options options = new BitmapFactory.Options();
+    options.inScaled = false;
+  Bitmap newcompass11 = BitmapFactory.decodeResource(getResources(), R.drawable.newcompass,options);
+  //ImageView newc = (ImageView)
+  Bitmap newcompass = Bitmap.createScaledBitmap(newcompass11, getMeasuredWidth(),  getMeasuredWidth()+2, true);
+
+    Rect srcRect = new Rect(0, 0, canvas.getWidth(), canvas.getHeight());
+    Rect dstRect = new Rect(srcRect);
+    Bitmap.Config conf = Bitmap.Config.ARGB_8888; 
+    paint.setFilterBitmap(true);
+    canvas.drawBitmap(newcompass, srcRect, dstRect, paint);
+  
+  
   
   paint.setColor(Color.RED);
   canvas.drawLine(
