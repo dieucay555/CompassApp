@@ -1,67 +1,118 @@
 package RedPheasant.CompassApp;
 import android.app.Activity;
-import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.Toast;
+import android.widget.TextView;
 
-public class Page_Main extends Activity {
-
-  private static SensorManager sensorService;
-  private Adapter_Compass_View compassView;
-  private Sensor sensor;
-
-  
-/** Called when the activity is first created. */
-
+public class Page_Main extends Activity implements SensorEventListener
+{
+ 
+ SensorManager sensorManager;
+ private Sensor sensorAccelerometer;
+ private Sensor sensorMagneticField;
+ 
+ private float[] valuesAccelerometer;
+ private float[] valuesMagneticField;
+ 
+ private float[] matrixR;
+ private float[] matrixI;
+ private float[] matrixValues;
+ 
+ //TextView readingAzimuth, readingPitch, readingRoll;
+ Adapter_Compass_View myCompass;
+ 
+  /** Called when the activity is first created. */
   @Override
   public void onCreate(Bundle savedInstanceState)
   {
-    super.onCreate(savedInstanceState);
-    compassView = new Adapter_Compass_View(this);
-    overridePendingTransition(R.layout.animation_fadein, R.layout.animation_fadeout); 
-    setContentView(compassView);
+      super.onCreate(savedInstanceState);
+      setContentView(R.layout.main);
+      //readingAzimuth = (TextView)findViewById(R.id.azimuth);
+      //readingPitch = (TextView)findViewById(R.id.pitch);
+      //readingRoll = (TextView)findViewById(R.id.roll);
+    
+      myCompass = (Adapter_Compass_View)findViewById(R.id.mycompass);
+    
+      sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
+      sensorAccelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+   sensorMagneticField = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+    
+   valuesAccelerometer = new float[3];
+   valuesMagneticField = new float[3];
 
-    sensorService = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-    sensor = sensorService.getDefaultSensor(Sensor.TYPE_ORIENTATION);
-    if (sensor != null) {
-      sensorService.registerListener(mySensorEventListener, sensor,
-          SensorManager.SENSOR_DELAY_NORMAL);
-      Log.i("Compass MainActivity", "Registerered for ORIENTATION Sensor");
-
-    } else {
-      Log.e("Compass MainActivity", "Registerered for ORIENTATION Sensor");
-      Toast.makeText(this, "ORIENTATION Sensor not found",
-          Toast.LENGTH_LONG).show();
-      finish();
-    }
+   matrixR = new float[9];
+   matrixI = new float[9];
+   matrixValues = new float[3];
   }
 
-  private SensorEventListener mySensorEventListener = new SensorEventListener() {
+ @Override
+ protected void onResume()
+ {
 
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-    }
+  sensorManager.registerListener(this,
+    sensorAccelerometer,
+    SensorManager.SENSOR_DELAY_NORMAL);
+  sensorManager.registerListener(this,
+    sensorMagneticField,
+    SensorManager.SENSOR_DELAY_NORMAL);
+  super.onResume();
+ }
 
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-      // angle between the magnetic north directio
-      // 0=North, 90=East, 180=South, 270=West
-      float azimuth = event.values[0];
-      compassView.updateData(azimuth);
-    }
-  };
+ @Override
+ protected void onPause() {
 
-  @Override
-  protected void onDestroy() {
-    super.onDestroy();
-    if (sensor != null) {
-      sensorService.unregisterListener(mySensorEventListener);
-    }
+  sensorManager.unregisterListener(this,
+    sensorAccelerometer);
+  sensorManager.unregisterListener(this,
+    sensorMagneticField);
+  super.onPause();
+ }
+
+ @Override
+ public void onAccuracyChanged(Sensor arg0, int arg1) {
+  // TODO Auto-generated method stub
+  
+ }
+
+ @Override
+ public void onSensorChanged(SensorEvent event) {
+  // TODO Auto-generated method stub
+  
+  switch(event.sensor.getType()){
+  case Sensor.TYPE_ACCELEROMETER:
+   for(int i =0; i < 3; i++){
+    valuesAccelerometer[i] = event.values[i];
+   }
+   break;
+  case Sensor.TYPE_MAGNETIC_FIELD:
+   for(int i =0; i < 3; i++){
+    valuesMagneticField[i] = event.values[i];
+   }
+   break;
   }
-
-} 
+  
+  boolean success = SensorManager.getRotationMatrix(
+       matrixR,
+       matrixI,
+       valuesAccelerometer,
+       valuesMagneticField);
+  
+  if(success){
+   SensorManager.getOrientation(matrixR, matrixValues);
+   
+   //double azimuth = Math.toDegrees(matrixValues[0]);
+   //double pitch = Math.toDegrees(matrixValues[1]);
+   //double roll = Math.toDegrees(matrixValues[2]);
+   
+   //readingAzimuth.setText("Azimuth: " + String.valueOf(azimuth));
+   //readingPitch.setText("Pitch: " + String.valueOf(pitch));
+   //readingRoll.setText("Roll: " + String.valueOf(roll));
+   
+   myCompass.update(matrixValues[0]);
+  }
+  
+ }
+}

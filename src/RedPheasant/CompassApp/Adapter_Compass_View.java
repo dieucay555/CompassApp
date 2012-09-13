@@ -4,24 +4,32 @@
  */
 package RedPheasant.CompassApp;
 
-import android.app.WallpaperManager;
 import android.content.Context;
 import android.graphics.*;
+import android.util.AttributeSet;
 import android.view.View;
 
 public class Adapter_Compass_View extends View
 {
 
   private Paint paint;
-  private float position = 0;
+  private float position;
 
   public Adapter_Compass_View(Context context)
   {
     super(context);
-    init();
-    setBackgroundResource(R.drawable.compasscreen2);
+    //init();
+    //setBackgroundResource(R.drawable.compasscreen2);
   }
+ public Adapter_Compass_View(Context context, AttributeSet attrs) {
+  super(context, attrs);
+  // TODO Auto-generated constructor stub
+ }
 
+ public Adapter_Compass_View(Context context, AttributeSet attrs, int defStyle) {
+  super(context, attrs, defStyle);
+  // TODO Auto-generated constructor stub
+ }
   private void init()
   {
     paint = new Paint();
@@ -31,7 +39,7 @@ public class Adapter_Compass_View extends View
     paint.setStyle(Paint.Style.STROKE);
     paint.setColor(Color.WHITE);
   }
-
+/*
   @Override
   protected void onDraw(Canvas canvas)
   {
@@ -67,7 +75,7 @@ public class Adapter_Compass_View extends View
    
    canvas.rotate(position, xPoint, yPoint);
    */
-
+/*
        super.onDraw(canvas);
  
             //canvas.drawColor(Color.GRAY);
@@ -90,10 +98,53 @@ public class Adapter_Compass_View extends View
             canvas.drawBitmap(b3, cx, cy, null);
   }
 
-  public void updateData(float position)
+  public void update(float position)
   {
     this.position = position;
     invalidate();
   }
 
-} 
+} */
+  
+   @Override
+ protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+  setMeasuredDimension(
+    MeasureSpec.getSize(widthMeasureSpec),
+    MeasureSpec.getSize(heightMeasureSpec));
+ }
+
+ @Override
+ protected void onDraw(Canvas canvas) {
+  
+  int w = getMeasuredWidth();
+  int h = getMeasuredHeight();
+  int r;
+  if(w > h){
+   r = h/2;
+  }else{
+   r = w/2;
+  }
+  
+  Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+  paint.setStyle(Paint.Style.STROKE);
+  paint.setStrokeWidth(5);
+  paint.setColor(Color.WHITE);
+  
+  canvas.drawCircle(w/2, h/2, r, paint);
+  
+  paint.setColor(Color.RED);
+  canvas.drawLine(
+    w/2,
+    h/2,
+    (float)(w/2 + r * Math.sin(-position)),
+    (float)(h/2 - r * Math.cos(-position)),
+    paint);
+
+ }
+ 
+ public void update(float dir){
+  position = dir;
+  invalidate();
+ }
+ 
+}
