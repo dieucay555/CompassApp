@@ -39,4 +39,76 @@ android:background="@drawable/mapscreencompass">
                 android:text="Sensors"/>
             </LinearLayout>
         </HorizontalScrollView>
+             <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+                <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="5dip"
+                android:layout_marginTop="7dp">   
+                    <ImageView
+                    android:id="@+id/route_image3"
+                    android:layout_width="60dip"
+                    android:layout_height="60dip"
+                    android:layout_marginLeft="10dp"
+                    android:src="@drawable/clock"/>
+                    <TextView
+                    android:id="@+id/route_title3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/route_image3"
+                    android:layout_toRightOf="@+id/route_image3"
+                    android:textColor="#000000"
+                    android:textSize="20sp"
+                    android:layout_marginLeft="10dp"
+                    android:text="Light"/>
+                    <TextView
+                    android:id="@+id/sensor_light"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/route_title3"
+                    android:textColor="#000000"
+                    android:textSize="30sp"
+                    android:layout_marginLeft="10dp"
+                    android:text="Sunny"
+                    android:layout_toRightOf="@+id/route_image3"/>
+                    </RelativeLayout>
+                    <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="5dip"
+                    android:layout_marginTop="7dp">   
+                    <ImageView
+                    android:id="@+id/route_image3"
+                    android:layout_width="60dip"
+                    android:layout_height="60dip"
+                    android:layout_marginLeft="10dp"
+                    android:src="@drawable/ruler"/>
+                    <TextView
+                    android:id="@+id/route_title3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/route_image3"
+                    android:layout_toRightOf="@+id/route_image3"
+                    android:textColor="#000000"
+                    android:textSize="20sp"
+                    android:layout_marginLeft="10dp"
+                    android:text="Gravity"/>
+                    <TextView
+                    android:id="@+id/sensor_gravity"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/route_title3"
+                    android:textColor="#000000"
+                    android:textSize="30sp"
+                    android:layout_marginLeft="10dp"
+                    android:text="12.5 Km"
+                    android:layout_toRightOf="@+id/route_image3"/>
+                    </RelativeLayout>
+                   
+        </LinearLayout>    
 </LinearLayout>

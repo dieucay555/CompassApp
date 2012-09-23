@@ -105,10 +105,10 @@ public class Page_Main extends Activity implements SensorEventListener
             @Override
             public void onClick(View v)
             {
-                 Toast.makeText(Page_Main.this, "Under Construction...", Toast.LENGTH_LONG).show();
-                 //Intent myIntent = new Intent(v.getContext(), Page_Sensors.class);
-                 //startActivityForResult(myIntent, 0);
-                 //overridePendingTransition(R.layout.animation_fadein, R.layout.animation_fadeout);
+                 //Toast.makeText(Page_Main.this, "Under Construction...", Toast.LENGTH_LONG).show();
+                 Intent myIntent = new Intent(v.getContext(), Page_Sensors.class);
+                 startActivityForResult(myIntent, 0);
+                 overridePendingTransition(R.layout.animation_fadein, R.layout.animation_fadeout);
             }
         });
 

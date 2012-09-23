@@ -11,6 +11,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 /**
  *
@@ -26,18 +27,15 @@ public class Page_Sensors extends Activity implements SensorEventListener
     SensorManager sensorManager;
     
     //Specific sensors.
-    private Sensor sensorAccelerometer;//Force.
+   // private Sensor sensorAccelerometer;//Force.
     private Sensor sensorGyroscope;//Rotation.
     private Sensor sensorGravity;//Force to the ground.
     private Sensor sensorLight;//Sunny //Dark //Cloudy.
-    private Sensor sensorAirPressure;//Hecto Pascal.
+    //private Sensor sensorAirPressure;//Hecto Pascal.
 
-    //Varables to store the specific sensor data.
-    private float[] valuesAccelerometer;
-    private float[] valuesGyroscope;
-    private float[] valuesGravity;
-    private float[] valuesLight;
-    private float[] valuesAirPressure;
+    TextView  lightSensor,gravitySensor,gyroscopeSensor,accelerometerSensor;
+    float maxLight;
+    
  //---------------------------------------------
     /**
      * Called when the activity is first created.
@@ -56,37 +54,83 @@ public class Page_Sensors extends Activity implements SensorEventListener
         sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         
         //Kry die spesifieke sensors van die Service af.
-        sensorAccelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        //sensorAccelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         sensorGyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
         sensorGravity = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
         sensorLight = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
-        sensorAirPressure = sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
+        //sensorAirPressure = sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
+        
+        //-----------------------
+        //  Light Sensor
+        //-----------------------
+           maxLight = sensorLight.getMaximumRange();
+           sensorManager.registerListener(this, sensorLight, SensorManager.SENSOR_DELAY_FASTEST);
+           lightSensor = (TextView)findViewById(R.id.sensor_light);
+        //-----------------------
+           
+        //-----------------------
+        //  Gravity Sensor
+        //-----------------------
+        gravitySensor = (TextView)findViewById(R.id.sensor_gravity);
+        //-----------------------
+        
+    
+        //accelerometerSensor = (TextView)findViewById(R.id.sensor_pressure);
+           
     }
 
     public void onSensorChanged(SensorEvent se)
     {
-      
+        
        switch(se.sensor.getType())
         {
-        case Sensor.TYPE_ACCELEROMETER:
-            System.arraycopy(se.values, 0, valuesAccelerometer, 0, 3);
-            break;
-
-        case Sensor.TYPE_GYROSCOPE:
-            System.arraycopy(se.values, 0, valuesGyroscope, 0, 3);
-            break;
-            
         case Sensor.TYPE_GRAVITY:
-            System.arraycopy(se.values, 0, valuesGravity, 0, 3);
+            gravitySensor.setText("x: "+ Math.round(se.values[0]*100.0)/100.0+" m/s^2 \ny: "+ Math.round(se.values[1]*100.0)/100.0+" m/s^2 \nz: "+ Math.round(se.values[2]*100.0)/100.0 +" m/s^2");
             break;
             
         case Sensor.TYPE_LIGHT:
-            System.arraycopy(se.values, 0, valuesLight, 0, 3);
+            float currentReading = se.values[0];
+            
+            if(currentReading >= 0 && currentReading <= 10)
+            {
+                lightSensor.setText("Pitch Black"); 
+            }
+            else if(currentReading >= 11 && currentReading <= 50)
+            {
+                lightSensor.setText("Very Dark"); 
+            }
+            else if(currentReading >= 51 && currentReading <= 200)
+            {
+                lightSensor.setText("Dark Indoors"); 
+            }
+            else if(currentReading >= 201 && currentReading <= 400)
+            {
+                lightSensor.setText("Dim Indoors"); 
+            }
+            else if(currentReading >= 401 && currentReading <= 1000)
+            {
+                lightSensor.setText("Normal Indoors"); 
+            }
+            else if(currentReading >= 1001 && currentReading <= 5000)
+            {
+                lightSensor.setText("Bright Indoors"); 
+            }
+            else if(currentReading >= 5001 && currentReading <= 10000)
+            {
+                lightSensor.setText("Dim Outdoors"); 
+            }
+            else if(currentReading >= 10001 && currentReading <= 30000)
+            {
+                lightSensor.setText("Cloudy Outdoors"); 
+            }
+            else if(currentReading >= 30001 && currentReading <= 100000)
+            {
+                lightSensor.setText("Direct Sunlight"); 
+            }
+           
             break;
          
-        case Sensor.TYPE_PRESSURE:
-            System.arraycopy(se.values, 0, valuesAirPressure, 0, 3);
-            break;
+        
         }
     }
 
@@ -97,11 +141,8 @@ public class Page_Sensors extends Activity implements SensorEventListener
     @Override
  protected void onResume()
  {
-     sensorManager.registerListener(this,sensorAccelerometer, SensorManager.SENSOR_DELAY_FASTEST);
-     sensorManager.registerListener(this,sensorGyroscope, SensorManager.SENSOR_DELAY_FASTEST);
      sensorManager.registerListener(this,sensorGravity, SensorManager.SENSOR_DELAY_FASTEST);
      sensorManager.registerListener(this,sensorLight, SensorManager.SENSOR_DELAY_FASTEST);
-     sensorManager.registerListener(this,sensorAirPressure, SensorManager.SENSOR_DELAY_FASTEST);
   
      super.onResume();
  }
