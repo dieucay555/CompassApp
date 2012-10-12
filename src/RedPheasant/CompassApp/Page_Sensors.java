@@ -154,4 +154,11 @@ public class Page_Sensors extends Activity implements SensorEventListener
   sensorManager.unregisterListener(this);
   super.onPause();
  }
+ 
+     @Override
+    public void onBackPressed()
+    {
+        super.onBackPressed();
+        overridePendingTransition(R.layout.animation_fadein, R.layout.animation_fadeout);
+    }
 }
