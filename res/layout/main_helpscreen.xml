@@ -39,4 +39,30 @@ android:background="@drawable/mapscreencompass">
                 android:text="Help"/>
             </LinearLayout>
         </HorizontalScrollView>
+        
+        
+        <ScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:scrollbarSize="0dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="75dp" >
+            
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+                    
+                <ImageView
+                    android:id="@+id/imageView_help"
+                    android:layout_marginTop="-15dp"                    
+                    android:layout_marginLeft="3dp"
+                    android:layout_marginRight="3dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/help_compass"/>
+                
+            </LinearLayout>  
+        </ScrollView>
+                
 </LinearLayout>
